@@ -3,7 +3,7 @@
     <metadata>
         <id>Node.js.redist</id>
         <version>$version$</version>
-        <title>Node.js</title>
+        <title>Node.js redist</title>
         <authors>Node.js Foundation</authors>
         <owners>AArnott</owners>
         <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v$version$/LICENSE</licenseUrl>
