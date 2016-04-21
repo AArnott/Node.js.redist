@@ -6,7 +6,7 @@
         <title>Node.js</title>
         <authors>Node.js Foundation</authors>
         <owners>Microsoft</owners>
-        <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v4.4.3/LICENSE</licenseUrl>
+        <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v$version$/LICENSE</licenseUrl>
         <projectUrl>https://nodejs.org/</projectUrl>
         <iconUrl>https://bitpay.com/img/js64.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
