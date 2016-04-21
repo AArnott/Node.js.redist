@@ -10,5 +10,5 @@ Param(
     [string]$Version='4.4.3'
 )
 
-.\Restore.ps1 -Version $Version
-.\Pack.ps1 -Version $Version
+& "$PSScriptRoot\Restore.ps1" -Version $Version
+& "$PSScriptRoot\Pack.ps1" -Version $Version
