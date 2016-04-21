@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Packages up a particular version of Node.js
+    that has previously been restored. 
+.PARAMETER Version
+    The version of Node.js to build a package for.
+#>
 Param(
     [Parameter(Mandatory=$true)]
     [string]$Version

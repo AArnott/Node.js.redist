@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Downloads build tools and a particular version of Node.js
+    for purposes of later building a package.
+.PARAMETER Version
+    The version of Node.js to download.
+#>
 Param(
     [Parameter(Mandatory=$true)]
     [string]$Version
