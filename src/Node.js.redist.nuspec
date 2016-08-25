@@ -7,7 +7,7 @@
         <authors>Node.js Foundation</authors>
         <owners>AArnott</owners>
         <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v$version$/LICENSE</licenseUrl>
-        <projectUrl>https://nodejs.org/</projectUrl>
+        <projectUrl>https://github.com/AArnott/Node.js.redist</projectUrl>
         <iconUrl>https://bitpay.com/img/js64.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</description>
