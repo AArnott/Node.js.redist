@@ -79,8 +79,24 @@ Function Get-WinNode($arch) {
     Copy-Item $nodePath $targetDir
 }
 
+Function Get-WinNodePdb($arch) {
+    $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj"
+    $zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
+    if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
+    Expand-ZIPFile -file $zipPath -destination $zipDir
+
+    $targetDir = "$LayoutRoot\tools\win-$arch"
+    if (!(Test-Path $targetDir)) {
+        $null = mkdir $targetDir
+    }
+
+    Copy-Item $zipDir\node.pdb $targetDir
+}
+
 Get-NixNode 'linux' x64
 Get-NixNode 'linux' x86
 Get-NixNode 'darwin' x64 -osBrand 'osx'
 Get-WinNode x86
+Get-WinNodePdb x86
 Get-WinNode x64
+Get-WinNodePdb x64
