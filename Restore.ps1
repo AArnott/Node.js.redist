@@ -66,7 +66,13 @@ Function Get-NixNode($os, $arch, $osBrand) {
         $null = mkdir $targetDir
     }
 
+    $targetDirSymbols = "$LayoutRootSymbols\tools\$osBrand-$arch"
+    if (!(Test-Path $targetDirSymbols)){
+        $null = mkdir $targetDirSymbols
+    }
+
     Copy-Item $PSScriptRoot\obj\node $targetDir
+    Copy-Item $PSScriptRoot\obj\node $targetDirSymbols
     Remove-Item $PSScriptRoot\obj\node
 }
 
@@ -87,7 +93,7 @@ Function Get-WinNode($arch) {
 }
 
 Function Get-WinNodePdb($arch) {
-    $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj"
+    $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj\win-$arch\$Version"
     $zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
     if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
     Expand-ZIPFile -file $zipPath -destination $zipDir
@@ -98,6 +104,7 @@ Function Get-WinNodePdb($arch) {
     }
 
     Copy-Item $zipDir\node.pdb $targetDir
+    Remove-Item $zipDir\node.pdb
 }
 
 Get-NixNode 'linux' x64
