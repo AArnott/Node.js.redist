@@ -12,6 +12,7 @@ Param(
 
 $DistRootUri = "https://nodejs.org/dist/v$Version"
 $LayoutRoot = "$PSScriptRoot\obj\layout\$Version"
+$LayoutRootSymbols = "$PSScriptRoot\obj\layoutsymbols\$Version"
 if (!(Test-Path $LayoutRoot)) { $null = mkdir $LayoutRoot }
 
 function Expand-ZIPFile($file, $destination) {
@@ -76,7 +77,13 @@ Function Get-WinNode($arch) {
         $null = mkdir $targetDir
     }
 
+    $targetDirSymbols = "$LayoutRootSymbols\tools\win-$arch"
+    if (!(Test-Path $targetDirSymbols)) {
+        $null = mkdir $targetDirSymbols
+    }
+
     Copy-Item $nodePath $targetDir
+    Copy-Item $nodePath $targetDirSymbols
 }
 
 Function Get-WinNodePdb($arch) {
@@ -85,7 +92,7 @@ Function Get-WinNodePdb($arch) {
     if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
     Expand-ZIPFile -file $zipPath -destination $zipDir
 
-    $targetDir = "$LayoutRoot\tools\win-$arch"
+    $targetDir = "$LayoutRootSymbols\tools\win-$arch"
     if (!(Test-Path $targetDir)) {
         $null = mkdir $targetDir
     }

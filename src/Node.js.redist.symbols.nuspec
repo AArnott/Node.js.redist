@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Node.js.redist.symbols</id>
+        <version>$version$</version>
+        <title>Node.js redist.symbols</title>
+        <authors>Node.js Foundation</authors>
+        <owners>AArnott</owners>
+        <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v$version$/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/AArnott/Node.js.redist</projectUrl>
+        <iconUrl>https://bitpay.com/img/js64.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</description>
+        <summary>Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.</summary>
+        <releaseNotes></releaseNotes>
+        <copyright>© 2015 Node.js Foundation</copyright>
+        <tags>node nodejs exe javascript runtime v8 server</tags>
+    </metadata>
+</package>

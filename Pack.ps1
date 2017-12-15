@@ -11,8 +11,10 @@ Param(
 )
 
 $LayoutRoot = "$PSScriptRoot\obj\layout\$Version"
+$LayoutRootSymbols = "$PSScriptRoot\obj\layoutsymbols\$Version"
 
 $targetDir = "$PSScriptRoot\bin"
 if (!(Test-Path $targetDir)) { $null = mkdir $targetDir } 
 
 nuget pack $PSScriptRoot\src\Node.js.redist.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version
+nuget pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version
