@@ -11,9 +11,9 @@
         <iconUrl>https://bitpay.com/img/js64.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</description>
-        <summary>Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.</summary>
+        <summary>Node.jsÂ® is a JavaScript runtime built on Chrome's V8 JavaScript engine.</summary>
         <releaseNotes></releaseNotes>
-        <copyright>© 2015 Node.js Foundation</copyright>
+        <copyright>Â© 2015 Node.js Foundation</copyright>
         <tags>node nodejs exe javascript runtime v8 server</tags>
     </metadata>
 </package>
