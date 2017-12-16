@@ -26,12 +26,17 @@ function Expand-ZIPFile($file, $destination) {
 if (!(Test-Path $PSScriptRoot\obj)) { $null = mkdir $PSScriptRoot\obj }
 
 $unzipTool = "$PSScriptRoot\obj\7z\7za.exe"
-if (!(Test-Path $unzipTool)) {
+if (Test-Path $unzipTool) {
+    Write-Verbose "7-zip found"
+} else {
     $zipToolArchive = "$PSScriptRoot\obj\7za920.zip"
-    if (!(Test-Path $zipToolArchive)) {
+    if (Test-Path $zipToolArchive) {
+        Write-Verbose "Skipped downloading 7-zip"
+    } else {
+        Write-Verbose "Downloading 7-zip"
         Invoke-WebRequest -Uri http://7-zip.org/a/7za920.zip -OutFile $zipToolArchive
     }
-    
+
     if (!(Test-Path $PSScriptRoot\obj\7z)) { $null = mkdir $PSScriptRoot\obj\7z }
     Expand-ZIPFile -file $zipToolArchive -destination $PSScriptRoot\obj\7z
 }
@@ -41,15 +46,18 @@ Param(
     [uri]$Uri,
     [string]$OutDir
 )
-    if (!(Test-Path $OutDir)) { 
+    if (!(Test-Path $OutDir)) {
         $null = mkdir $OutDir
     }
-    
+
     $OutFile = Join-Path $OutDir $Uri.Segments[$Uri.Segments.Length - 1]
-    if (!(Test-Path $OutFile)) {
+    if (Test-Path $OutFile) {
+        Write-Verbose "Skipped download from $Uri"
+    } else {
+        Write-Verbose "Downloading $Uri"
         Invoke-WebRequest -Uri $Uri -OutFile $OutFile
     }
-    
+
     $OutFile
 }
 
@@ -59,7 +67,7 @@ Function Get-NixNode($os, $arch, $osBrand) {
     $tarPath = Join-Path $PSScriptRoot\obj $tarName
     $null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tgzPath $tarName
     $null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tarPath "node-v$Version-$os-$arch\bin\node"
-    
+
     if (!$osBrand) { $osBrand = $os }
     $targetDir = "$LayoutRoot\tools\$osBrand-$arch"
     if (!(Test-Path $targetDir)) {
@@ -93,18 +101,22 @@ Function Get-WinNode($arch) {
 }
 
 Function Get-WinNodePdb($arch) {
-    $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj\win-$arch\$Version"
-    $zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
-    if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
-    Expand-ZIPFile -file $zipPath -destination $zipDir
-
     $targetDir = "$LayoutRootSymbols\tools\win-$arch"
-    if (!(Test-Path $targetDir)) {
-        $null = mkdir $targetDir
-    }
+    $zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
+    if (Test-Path $targetDir\node.pdb) {
+        Write-Verbose "Skipped node symbols for win-$arch"
+    } else {
+        Write-Verbose "Downloading node symbols for win-$arch..."
+        $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj\win-$arch-$Version"
+        if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
+        Expand-ZIPFile -file $zipPath -destination $zipDir
 
-    Copy-Item $zipDir\node.pdb $targetDir
-    Remove-Item $zipDir\node.pdb
+        if (!(Test-Path $targetDir)) {
+            $null = mkdir $targetDir
+        }
+
+        Copy-Item $zipDir\node.pdb $targetDir
+    }
 }
 
 Get-NixNode 'linux' x64
