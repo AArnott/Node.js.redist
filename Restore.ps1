@@ -13,6 +13,7 @@ Param(
 $DistRootUri = "https://nodejs.org/dist/v$Version"
 $LayoutRoot = "$PSScriptRoot\obj\layout\$Version"
 $LayoutRootSymbols = "$PSScriptRoot\obj\layoutsymbols\$Version"
+$Script:ProgressPreference = 'SilentlyContinue' # DRAMATIC perf improvement: https://stackoverflow.com/a/43477248/46926
 if (!(Test-Path $LayoutRoot)) { $null = mkdir $LayoutRoot }
 
 function Expand-ZIPFile($file, $destination) {
