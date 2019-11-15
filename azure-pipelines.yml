@@ -1,0 +1,26 @@
+trigger: none
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- checkout: self
+  clean: true
+- powershell: Write-Host "##vso[build.updatebuildnumber]$(Version)"
+  displayName: Setting build number
+- task: NuGetToolInstaller@0
+  displayName: Install NuGet tool
+  inputs:
+    versionSpec: 5.x
+- powershell: ./Build.ps1 -Version $(Version)
+  displayName: Building node.js.redist packages
+- publish: bin
+  displayName: Capturing artifacts
+  artifact: Packages
+- task: NuGetCommand@2
+  displayName: Pushing packages to nuget.org
+  inputs:
+    command: push
+    packagesToPush: bin/*.nupkg
+    nuGetFeedType: external
+    publishFeedCredentials: nuget.org/aarnott/node.js.redist
