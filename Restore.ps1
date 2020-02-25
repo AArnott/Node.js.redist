@@ -86,19 +86,18 @@ Function Get-NixNode($os, $arch, $osBrand) {
 }
 
 Function Get-WinNode($arch) {
-    $nodePath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node.exe -OutDir "$PSScriptRoot\obj\win-$arch-$Version"
+    $nodeZipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/node-v$Version-win-$arch.zip -OutDir "$PSScriptRoot\obj"
     $targetDir = "$LayoutRoot\tools\win-$arch"
-    if (!(Test-Path $targetDir)) {
-        $null = mkdir $targetDir
-    }
+
+    $null = & $unzipTool -y -o"$LayoutRoot\tools" x $nodeZipPath
+    $null = & Move-Item "$LayoutRoot\tools\node-v$Version-win-$arch" $targetDir
 
     $targetDirSymbols = "$LayoutRootSymbols\tools\win-$arch"
     if (!(Test-Path $targetDirSymbols)) {
         $null = mkdir $targetDirSymbols
     }
 
-    Copy-Item $nodePath $targetDir
-    Copy-Item $nodePath $targetDirSymbols
+    Copy-Item "$targetDir\node.exe" $targetDirSymbols
 }
 
 Function Get-WinNodePdb($arch) {
