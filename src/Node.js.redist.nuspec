@@ -6,9 +6,9 @@
         <title>Node.js redist</title>
         <authors>Node.js Foundation</authors>
         <owners>AArnott</owners>
-        <licenseUrl>https://raw.githubusercontent.com/nodejs/node/v$version$/LICENSE</licenseUrl>
+        <license type="file">LICENSE</license>
         <projectUrl>https://github.com/AArnott/Node.js.redist</projectUrl>
-        <iconUrl>https://bitpay.com/img/js64.png</iconUrl>
+        <icon>icon.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</description>
         <summary>Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.</summary>
@@ -16,4 +16,9 @@
         <copyright>© 2015 Node.js Foundation</copyright>
         <tags>node nodejs exe javascript runtime v8 server</tags>
     </metadata>
+    <files>
+      <file src="**" target="/" />
+      <file src="$src$\icon.png" target="icon.png" />
+      <file src="$common$\LICENSE" target="LICENSE" />
+    </files>
 </package>

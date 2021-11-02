@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
     Packages up a particular version of Node.js
-    that has previously been restored. 
+    that has previously been restored.
 .PARAMETER Version
     The version of Node.js to build a package for.
 #>
@@ -14,7 +14,9 @@ $LayoutRoot = "$PSScriptRoot\obj\layout\$Version"
 $LayoutRootSymbols = "$PSScriptRoot\obj\layoutsymbols\$Version"
 
 $targetDir = "$PSScriptRoot\bin"
-if (!(Test-Path $targetDir)) { $null = mkdir $targetDir } 
+if (!(Test-Path $targetDir)) { $null = mkdir $targetDir }
 
-nuget pack $PSScriptRoot\src\Node.js.redist.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version
-nuget pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version
+$Properties = "src=$PSScriptRoot\src;common=$PSScriptRoot\obj\$Version"
+
+nuget pack $PSScriptRoot\src\Node.js.redist.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
+nuget pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version -Properties $Properties
