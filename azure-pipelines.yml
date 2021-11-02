@@ -27,4 +27,4 @@ steps:
     command: push
     packagesToPush: bin/*.nupkg
     nuGetFeedType: external
-    publishFeedCredentials: nuget.org/aarnott/node.js.redist
+    publishFeedCredentials: nuget.org
