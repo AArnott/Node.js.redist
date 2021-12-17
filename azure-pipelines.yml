@@ -18,7 +18,7 @@ steps:
   displayName: Install NuGet tool
   inputs:
     versionSpec: 5.x
-- powershell: ./Build.ps1 -Version ${{ parameters.Version }}
+- powershell: ./Build.ps1 -Version ${{ parameters.Version }} -Verbose
   displayName: Building node.js.redist packages
 - publish: bin
   displayName: Capturing artifacts
