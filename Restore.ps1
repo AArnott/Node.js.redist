@@ -56,7 +56,11 @@ Param(
         Write-Verbose "Skipped download from $Uri"
     } else {
         Write-Verbose "Downloading $Uri"
-        Invoke-WebRequest -Uri $Uri -OutFile $OutFile
+        try {
+            (New-Object System.Net.WebClient).DownloadFile($Uri, $OutFile)
+        } finally {
+            # This try/finally causes the script to abort
+        }
     }
 
     $OutFile
@@ -120,6 +124,10 @@ Function Get-WinNodePdb($arch) {
     }
 }
 
+Function Get-LicenseFile {
+    Get-NetworkFile -Uri "https://raw.githubusercontent.com/nodejs/node/v$Version/LICENSE" -OutDir "$PSScriptRoot\obj\$Version"
+}
+
 Get-NixNode 'linux' x64
 #Get-NixNode 'linux' x86 # Node 10.0.0 removes support for x86 linux
 Get-NixNode 'darwin' x64 -osBrand 'osx'
@@ -127,3 +135,4 @@ Get-WinNode x86
 Get-WinNodePdb x86
 Get-WinNode x64
 Get-WinNodePdb x64
+Get-LicenseFile

@@ -1,27 +1,35 @@
 trigger: none
 
+parameters:
+- name: Version
+  type: string
+  default: 16.13.1
+- name: push
+  type: boolean
+  default: false
+
 pool:
   vmImage: windows-latest
 
 steps:
 - checkout: self
   clean: true
-- powershell: Write-Host "##vso[build.updatebuildnumber]$(Version)"
+- powershell: Write-Host "##vso[build.updatebuildnumber]${{ parameters.Version }}+${{ parameters.push }}"
   displayName: Setting build number
 - task: NuGetToolInstaller@0
   displayName: Install NuGet tool
   inputs:
     versionSpec: 5.x
-- powershell: ./Build.ps1 -Version $(Version)
+- powershell: ./Build.ps1 -Version ${{ parameters.Version }}
   displayName: Building node.js.redist packages
 - publish: bin
   displayName: Capturing artifacts
   artifact: Packages
 - task: NuGetCommand@2
   displayName: Pushing packages to nuget.org
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(succeeded(), ${{ parameters.push }})
   inputs:
     command: push
     packagesToPush: bin/*.nupkg
     nuGetFeedType: external
-    publishFeedCredentials: nuget.org/aarnott/node.js.redist
+    publishFeedCredentials: nuget.org
