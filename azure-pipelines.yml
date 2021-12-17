@@ -14,7 +14,7 @@ pool:
 steps:
 - checkout: self
   clean: true
-- powershell: Write-Host "##vso[build.updatebuildnumber]${{ parameters.Version }}"
+- powershell: Write-Host "##vso[build.updatebuildnumber]${{ parameters.Version }}+${{ parameters.push }}"
   displayName: Setting build number
 - task: NuGetToolInstaller@0
   displayName: Install NuGet tool
