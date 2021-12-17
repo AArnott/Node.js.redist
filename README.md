@@ -1,6 +1,6 @@
 # Node.js.redist
 
-![NuGet package](https://img.shields.io/nuget/dt/node.js.redist?label=nuget)
+[![NuGet package](https://img.shields.io/nuget/dt/node.js.redist?label=nuget)](http://www.nuget.org/packages/node.js.redist)
 
 This project contains the scripts necessary to build Node.js.redist packages.
 
