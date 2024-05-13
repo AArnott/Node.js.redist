@@ -67,61 +67,55 @@ Param(
 }
 
 Function Get-NixNode($os, $arch, $osBrand) {
-    $tgzPath = Get-NetworkFile -Uri $DistRootUri/node-v$Version-$os-$arch.tar.gz -OutDir "$PSScriptRoot\obj"
-    $tarName = [IO.Path]::GetFileNameWithoutExtension($tgzPath)
-    $tarPath = Join-Path $PSScriptRoot\obj $tarName
-    $null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tgzPath $tarName
-    $null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tarPath "node-v$Version-$os-$arch\bin\node"
+    $tgzPath = "$PSScriptRoot\obj\node-v$Version-$os-$arch.tar.gz"
+    $expandedPath = "$PSScriptRoot\obj\node-v$Version-$os-$arch"
+
+    if (!(Test-Path $tgzPath)){
+      Get-NetworkFile -Uri $DistRootUri/node-v$Version-$os-$arch.tar.gz -OutDir "$PSScriptRoot\obj"
+    }
+
+    if (!(Test-Path $expandedPath)) {
+      $tarName = [IO.Path]::GetFileNameWithoutExtension($tgzPath)
+      $tarPath = Join-Path $PSScriptRoot\obj $tarName
+      $null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tgzPath $tarName
+      $null = & $unzipTool -y -o"$expandedPath" x $tarPath
+    }
 
     if (!$osBrand) { $osBrand = $os }
     $targetDir = "$LayoutRoot\tools\$osBrand-$arch"
     if (!(Test-Path $targetDir)) {
         $null = mkdir $targetDir
+        $null = mkdir $targetDir\bin
+        $null = mkdir $targetDir\lib
     }
 
-    $targetDirSymbols = "$LayoutRootSymbols\tools\$osBrand-$arch"
-    if (!(Test-Path $targetDirSymbols)){
-        $null = mkdir $targetDirSymbols
-    }
+    $binDir = "$expandedPath\node-v$Version-$os-$arch\bin\*"
+    $libDir = "$expandedPath\node-v$Version-$os-$arch\lib\*"
 
-    Copy-Item $PSScriptRoot\obj\node $targetDir
-    Copy-Item $PSScriptRoot\obj\node $targetDirSymbols
-    Remove-Item $PSScriptRoot\obj\node
+    Copy-Item -Path $binDir -Destination $targetDir\bin -Recurse -Force
+    Copy-Item -Path $libDir -Destination $targetDir\lib -Recurse -Force
 }
 
 Function Get-WinNode($arch) {
-    $nodePath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node.exe -OutDir "$PSScriptRoot\obj\win-$arch-$Version"
+    $zipPath = "$PSScriptRoot\obj\node-v$Version-win-$arch.zip"
+    $expandedPath = "$PSScriptRoot\obj\node-v$Version-win-$arch"
+
+    if (!(Test-Path $zipPath)) {
+      Get-NetworkFile -Uri $DistRootUri/node-v$Version-win-$arch.zip -OutDir "$PSScriptRoot\obj"
+    }
+
+    if (!(Test-Path $expandedPath)) {
+      $null = & $unzipTool -y -o"$expandedPath" x $zipPath
+    }
+
     $targetDir = "$LayoutRoot\tools\win-$arch"
     if (!(Test-Path $targetDir)) {
         $null = mkdir $targetDir
     }
 
-    $targetDirSymbols = "$LayoutRootSymbols\tools\win-$arch"
-    if (!(Test-Path $targetDirSymbols)) {
-        $null = mkdir $targetDirSymbols
-    }
+    $binDir = "$expandedPath\node-v$Version-win-$arch\*"
 
-    Copy-Item $nodePath $targetDir
-    Copy-Item $nodePath $targetDirSymbols
-}
-
-Function Get-WinNodePdb($arch) {
-    $targetDir = "$LayoutRootSymbols\tools\win-$arch"
-    $zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
-    if (Test-Path $targetDir\node.pdb) {
-        Write-Verbose "Skipped node symbols for win-$arch"
-    } else {
-        Write-Verbose "Downloading node symbols for win-$arch..."
-        $zipPath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node_pdb.zip -OutDir "$PSScriptRoot\obj\win-$arch-$Version"
-        if (!(Test-Path $zipDir)) { $null = mkdir $zipDir }
-        Expand-ZIPFile -file $zipPath -destination $zipDir
-
-        if (!(Test-Path $targetDir)) {
-            $null = mkdir $targetDir
-        }
-
-        Copy-Item $zipDir\node.pdb $targetDir
-    }
+    Copy-Item -Path $binDir -Destination $targetDir -Recurse -Force
 }
 
 Function Get-LicenseFile {
@@ -137,7 +131,5 @@ try {
     Write-Warning "No darwin-arm64 build available for Node.js $Version"
 }
 Get-WinNode x86
-Get-WinNodePdb x86
 Get-WinNode x64
-Get-WinNodePdb x64
 Get-LicenseFile
