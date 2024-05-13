@@ -18,5 +18,7 @@ if (!(Test-Path $targetDir)) { $null = mkdir $targetDir }
 
 $Properties = "src=$PSScriptRoot\src;common=$PSScriptRoot\obj\$Version"
 
-nuget pack $PSScriptRoot\src\Node.js.redist.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
-nuget pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version -Properties $Properties
+$nugetPath = "$PSScriptRoot\nuget.exe"
+
+. $nugetPath pack $PSScriptRoot\src\Node.js.redist.withtools.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
+# . $nugetPath pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version -Properties $Properties

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>Node.js.redist</id>
+        <id>Node.js.redist.withtools</id>
         <version>$version$</version>
-        <title>Node.js redist</title>
+        <title>Node.js redist with tools</title>
         <authors>Node.js Foundation</authors>
-        <owners>AArnott</owners>
+        <owners>lemming104, AArnott</owners>
         <license type="file">LICENSE</license>
-        <projectUrl>https://github.com/AArnott/Node.js.redist</projectUrl>
+        <projectUrl>https://github.com/lemming104/Node.js.redist</projectUrl>
         <icon>icon.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world.</description>
