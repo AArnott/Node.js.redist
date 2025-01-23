@@ -84,7 +84,7 @@ Function Get-NixNode($os, $arch, $osBrand) {
 	$null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tgzPath $tarName
 	$null = & $unzipTool -y -o"$PSScriptRoot\obj" e $tarPath "node-v$Version-$os-$arch\bin\node"
 
-	$targetDir = "$LayoutRoot\tools\$osBrand-$arch"
+	$targetDir = "$LayoutRoot\$osBrand\tools\$arch"
 	if (!(Test-Path $targetDir)) {
 		$null = mkdir $targetDir
 	}
@@ -96,7 +96,7 @@ Function Get-NixNode($os, $arch, $osBrand) {
 Function Get-WinNode($arch) {
 	Write-Host "Acquiring node.js for Windows $arch"
 	$nodePath = Get-NetworkFile -Uri https://nodejs.org/dist/v$Version/win-$arch/node.exe -OutDir "$PSScriptRoot\obj\win-$arch-$Version"
-	$targetDir = "$LayoutRoot\tools\win-$arch"
+	$targetDir = "$LayoutRoot\win\tools\$arch"
 	if (!(Test-Path $targetDir)) {
 		$null = mkdir $targetDir
 	}
@@ -105,7 +105,7 @@ Function Get-WinNode($arch) {
 }
 
 Function Get-WinNodePdb($arch) {
-	$targetDir = "$LayoutRootSymbols\tools\win-$arch"
+	$targetDir = "$LayoutRootSymbols\win\tools\$arch"
 	$zipDir = "$PSScriptRoot\obj\win-$arch-$Version"
 	if (Test-Path $targetDir\node.pdb) {
 		Write-Verbose "Skipped node symbols for win-$arch because they are already present."

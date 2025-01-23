@@ -24,5 +24,17 @@ $Properties = "src=$PSScriptRoot\src;common=$PSScriptRoot\obj\$Version"
 
 $nugetTool = & "$PSScriptRoot\Get-NuGetTool.ps1"
 
-& $nugetTool pack $PSScriptRoot\src\Node.js.redist.nuspec -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
+'win','linux','osx' |% {
+	Write-Host "Packing binary packages for $_"
+	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.$_.nuspec  -BasePath $LayoutRoot\$_ -OutputDirectory $targetDir -Version $Version -Properties $Properties
+}
+
+Write-Host "Packing symbols for Windows"
+'x86','x64','arm64' |% {
+	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win-$_.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
+}
+& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
+
+Write-Host "Packing top-level packages"
+& $nugetTool pack $PSScriptRoot\src\Node.js.redist.nuspec         -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
 & $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version -Properties $Properties

@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
-		<id>Node.js.redist</id>
+		<id>Node.js.redist.symbols.win</id>
 		<version>$version$</version>
-		<title>Node.js redist</title>
+		<title>Node.js for Windows symbols redist</title>
 		<authors>Node.js Foundation</authors>
 		<owners>AArnott</owners>
 		<license type="file">LICENSE</license>
@@ -17,9 +17,9 @@
 		<tags>node nodejs exe javascript runtime v8 server</tags>
 		<readme>README.md</readme>
 		<dependencies>
-			<dependency id="Node.js.redist.win" version="$version$" />
-			<dependency id="Node.js.redist.linux" version="$version$" />
-			<dependency id="Node.js.redist.osx" version="$version$" />
+			<dependency id="Node.js.redist.symbols.win-x86" version="$version$" />
+			<dependency id="Node.js.redist.symbols.win-x64" version="$version$" />
+			<dependency id="Node.js.redist.symbols.win-arm64" version="$version$" />
 		</dependencies>
 	</metadata>
 	<files>
