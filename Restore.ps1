@@ -89,13 +89,7 @@ Function Get-NixNode($os, $arch, $osBrand) {
 		$null = mkdir $targetDir
 	}
 
-	$targetDirSymbols = "$LayoutRootSymbols\tools\$osBrand-$arch"
-	if (!(Test-Path $targetDirSymbols)) {
-		$null = mkdir $targetDirSymbols
-	}
-
 	Copy-Item $PSScriptRoot\obj\node $targetDir
-	Copy-Item $PSScriptRoot\obj\node $targetDirSymbols
 	Remove-Item $PSScriptRoot\obj\node
 }
 
@@ -107,13 +101,7 @@ Function Get-WinNode($arch) {
 		$null = mkdir $targetDir
 	}
 
-	$targetDirSymbols = "$LayoutRootSymbols\tools\win-$arch"
-	if (!(Test-Path $targetDirSymbols)) {
-		$null = mkdir $targetDirSymbols
-	}
-
 	Copy-Item $nodePath $targetDir
-	Copy-Item $nodePath $targetDirSymbols
 }
 
 Function Get-WinNodePdb($arch) {
@@ -132,7 +120,7 @@ Function Get-WinNodePdb($arch) {
 			$null = mkdir $targetDir
 		}
 
-		Copy-Item $zipDir\node.pdb $targetDir
+		Copy-Item $zipDir\node.pdb,$zipDir\node.exe $targetDir
 	}
 }
 
