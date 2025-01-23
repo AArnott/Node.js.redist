@@ -15,9 +15,11 @@
 		<releaseNotes></releaseNotes>
 		<copyright>© 2015 Node.js Foundation</copyright>
 		<tags>node nodejs exe javascript runtime v8 server</tags>
+		<readme>README.md</readme>
 	</metadata>
 	<files>
 		<file src="**" target="/" />
+		<file src="$src$\README.md" target="README.md" />
 		<file src="$src$\icon.png" target="icon.png" />
 		<file src="$common$\LICENSE" target="LICENSE" />
 	</files>
