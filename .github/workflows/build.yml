@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
-        name: Building node.js.redist packages
+        name: 🏗️ Building node.js.redist packages
       - uses: actions/upload-artifact@v4
         with:
           path: bin

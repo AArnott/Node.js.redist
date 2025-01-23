@@ -6,7 +6,7 @@
 #>
 Param(
 	[Parameter()]
-	[string]$NuGetVersion = '6.4.0'
+	[string]$NuGetVersion = '6.12.2'
 )
 
 $command = Get-Command nuget -ErrorAction SilentlyContinue
