@@ -1,0 +1,34 @@
+name: 🏭 Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - 'validate/*'
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: The Node.js version to pack
+      publish:
+        type: boolean
+        description: Push to nuget.org
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
+        name: Building node.js.redist packages
+      - uses: actions/upload-artifact@v4
+        with:
+          path: bin
+          name: Packages
+        name: 📢 Publish artifacts
+
+      - name: 🚀 Push NuGet packages
+        run: dotnet nuget push bin/*.nupkg --source https://api.nuget.org/v3/index.json -k '${{ secrets.NUGET_API_KEY }}'
+        if: success() && inputs.publish
