@@ -29,6 +29,9 @@ jobs:
           name: Packages
         name: 📢 Publish artifacts
 
+      - run: ./Test.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
+        name: 🧪 Test packages
+
       - name: 🚀 Push NuGet packages
         run: dotnet nuget push bin/*.nupkg --source https://api.nuget.org/v3/index.json -k '${{ secrets.NUGET_API_KEY }}'
         if: success() && inputs.publish
