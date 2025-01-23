@@ -129,6 +129,7 @@ Function Get-LicenseFile {
 }
 
 Get-NixNode 'linux' x64
+Get-NixNode 'linux' arm64
 #Get-NixNode 'linux' x86 # Node 10.0.0 removes support for x86 linux
 Get-NixNode 'darwin' x64 -osBrand 'osx'
 try {
@@ -137,8 +138,10 @@ try {
 catch {
 	Write-Warning "No darwin-arm64 build available for Node.js $Version"
 }
-Get-WinNode x86
-Get-WinNodePdb x86
-Get-WinNode x64
-Get-WinNodePdb x64
+
+'x86','x64','arm64' |% {
+	Get-WinNode $_
+	Get-WinNodePdb $_
+}
+
 Get-LicenseFile
