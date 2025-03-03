@@ -19,7 +19,6 @@
 		<dependencies>
 			<dependency id="Node.js.redist.symbols.win-x86" version="$version$" />
 			<dependency id="Node.js.redist.symbols.win-x64" version="$version$" />
-			<dependency id="Node.js.redist.symbols.win-arm64" version="$version$" />
 		</dependencies>
 	</metadata>
 	<files>

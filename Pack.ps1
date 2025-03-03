@@ -30,7 +30,7 @@ $nugetTool = & "$PSScriptRoot\Get-NuGetTool.ps1"
 }
 
 Write-Host "Packing symbols for Windows"
-'x86','x64','arm64' |% {
+'x86','x64' |% {
 	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win-$_.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
 }
 & $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties

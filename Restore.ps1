@@ -139,7 +139,7 @@ catch {
 	Write-Warning "No darwin-arm64 build available for Node.js $Version"
 }
 
-'x86','x64','arm64' |% {
+'x86','x64' |% {
 	Get-WinNode $_
 	Get-WinNodePdb $_
 }
