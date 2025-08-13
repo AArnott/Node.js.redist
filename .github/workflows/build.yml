@@ -21,7 +21,7 @@ jobs:
     name: Build ${{ inputs.version || 'sample version' }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
         name: 🏗️ Building node.js.redist packages
       - uses: actions/upload-artifact@v4
