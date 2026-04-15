@@ -24,7 +24,11 @@ New-Item -ItemType Directory -Path $TestOutputDir | Out-Null
 }
 
 # Verify that the expected number of packages were brought down.
+$majorVersion = [int]($Version -split '\.')[0]
 $expectedCount = (Get-ChildItem $PSScriptRoot\src\*.nuspec).Length
+if ($majorVersion -ge 23) {
+	$expectedCount-- # Node.js 23+ has no win-x86 artifacts; symbols.win-x86 is not published
+}
 $actualCount = (Get-ChildItem $TestOutputDir\*).Length
 
 if ($expectedCount -ne $actualCount) {

@@ -30,10 +30,25 @@ $nugetTool = & "$PSScriptRoot\Get-NuGetTool.ps1"
 }
 
 Write-Host "Packing symbols for Windows"
-'x86','x64','arm64' |% {
+$majorVersion = [int]($Version -split '\.')[0]
+$winArchitectures = if ($majorVersion -ge 23) { 'x64','arm64' } else { 'x86','x64','arm64' }
+$winArchitectures |% {
 	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win-$_.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
 }
-& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
+
+# Generate a temporary symbols.win.nuspec that only lists the architectures available for this version.
+$symbolsWinNuspecPath = "$PSScriptRoot\src\Node.js.redist.symbols.win.nuspec"
+if ($winArchitectures -notcontains 'x86') {
+	[xml]$symbolsWinNuspec = Get-Content $symbolsWinNuspecPath
+	$ns = New-Object System.Xml.XmlNamespaceManager($symbolsWinNuspec.NameTable)
+	$ns.AddNamespace('n', 'http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd')
+	$x86Dep = $symbolsWinNuspec.SelectSingleNode('//n:dependency[@id="Node.js.redist.symbols.win-x86"]', $ns)
+	if ($x86Dep) { $null = $x86Dep.ParentNode.RemoveChild($x86Dep) }
+	if (!(Test-Path $PSScriptRoot\obj)) { $null = mkdir $PSScriptRoot\obj }
+	$symbolsWinNuspecPath = "$PSScriptRoot\obj\Node.js.redist.symbols.win.nuspec"
+	$symbolsWinNuspec.Save($symbolsWinNuspecPath)
+}
+& $nugetTool pack $symbolsWinNuspecPath -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
 
 Write-Host "Packing top-level packages"
 & $nugetTool pack $PSScriptRoot\src\Node.js.redist.nuspec         -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties

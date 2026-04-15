@@ -139,7 +139,9 @@ catch {
 	Write-Warning "No darwin-arm64 build available for Node.js $Version"
 }
 
-'x86','x64','arm64' |% {
+$majorVersion = [int]($Version -split '\.')[0]
+$winArchitectures = if ($majorVersion -ge 23) { 'x64','arm64' } else { 'x86','x64','arm64' }
+$winArchitectures |% {
 	Get-WinNode $_
 	Get-WinNodePdb $_
 }
