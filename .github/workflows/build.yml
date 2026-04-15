@@ -20,6 +20,9 @@ jobs:
   build:
     name: Build ${{ inputs.version || 'sample version' }}
     runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
@@ -33,6 +36,13 @@ jobs:
       - run: ./Test.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
         name: 🧪 Test packages
 
+      - uses: NuGet/login@v1
+        id: nuget-login
+        if: success() && inputs.publish
+        with:
+          user: ${{ github.repository_owner }}
+        name: 🔐 NuGet trusted publishing login
+
       - name: 🚀 Push NuGet packages
-        run: dotnet nuget push bin\*.nupkg --source https://api.nuget.org/v3/index.json -k '${{ secrets.NUGET_API_KEY }}'
+        run: dotnet nuget push bin\*.nupkg --source https://api.nuget.org/v3/index.json --api-key '${{ steps.nuget-login.outputs.NUGET_API_KEY }}'
         if: success() && inputs.publish
