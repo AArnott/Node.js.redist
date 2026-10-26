@@ -19,7 +19,7 @@ on:
 
 jobs:
   build:
-    name: Build ${{ inputs.version || '24.22.1' }}
+    name: Build ${{ inputs.version || 'sample version' }}
     runs-on: windows-latest
     permissions:
       contents: read
