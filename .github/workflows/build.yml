@@ -11,6 +11,7 @@ on:
       version:
         required: true
         type: string
+        default: '24.22.1'
         description: The Node.js version to pack
       publish:
         type: boolean
@@ -24,7 +25,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
+      - run: ./Build.ps1 -Version ${{ inputs.version || '24.22.1' }} -Verbose
         name: 🏗️ Building node.js.redist packages
       - uses: actions/upload-artifact@v7
         with:
@@ -32,7 +33,7 @@ jobs:
           name: Packages
         name: 📢 Publish artifacts
 
-      - run: ./Test.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
+      - run: ./Test.ps1 -Version ${{ inputs.version || '24.22.1' }} -Verbose
         name: 🧪 Test packages
 
   publish:
