@@ -9,7 +9,7 @@
 #>
 Param(
 	[Parameter()]
-	[string]$Version = '16.13.1'
+	[string]$Version = '24.22.1'
 )
 
 & "$PSScriptRoot\Restore.ps1" -Version $Version
