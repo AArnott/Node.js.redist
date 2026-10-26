@@ -22,7 +22,6 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v7
       - run: ./Build.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
@@ -36,13 +35,64 @@ jobs:
       - run: ./Test.ps1 -Version ${{ inputs.version || '20.18.2' }} -Verbose
         name: 🧪 Test packages
 
+  publish:
+    name: Sign and publish packages
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    runs-on: windows-latest
+    environment: Publishing
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    env:
+      AZURE_CORE_OUTPUT: none
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: Packages
+          path: bin
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore signing tool
+        run: dotnet tool restore
+
+      - name: Authenticate to Azure
+        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Sign NuGet packages
+        run: >
+          dotnet tool run sign -- code azure-key-vault
+          '*.nupkg'
+          --base-directory '${{ github.workspace }}\bin'
+          --azure-key-vault-url '${{ vars.AZURE_KEY_VAULT_URL }}'
+          --azure-key-vault-certificate '${{ vars.AZURE_KEY_VAULT_CERTIFICATE }}'
+          --azure-credential-type azure-cli
+
+      - name: Verify NuGet signatures
+        run: dotnet nuget verify bin\*.nupkg --all
+
+      - name: Upload signed packages
+        uses: actions/upload-artifact@v7
+        with:
+          path: bin\*.nupkg
+          name: Signed Packages
+          if-no-files-found: error
+
       - uses: NuGet/login@v1
         id: nuget-login
-        if: success() && inputs.publish
         with:
-          user: ${{ github.repository_owner }}
+          user: ${{ secrets.NUGET_USER }}
         name: 🔐 NuGet trusted publishing login
 
       - name: 🚀 Push NuGet packages
         run: dotnet nuget push bin\*.nupkg --source https://api.nuget.org/v3/index.json --api-key '${{ steps.nuget-login.outputs.NUGET_API_KEY }}'
-        if: success() && inputs.publish
