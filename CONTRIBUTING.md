@@ -27,7 +27,9 @@ version to package and `publish` enabled. After the build and package tests pass
 a separate job uses the `Publishing` GitHub environment to sign every NuGet
 package with Azure Key Vault, verify the signatures, and push to nuget.org using
 trusted publishing. Signing does not recurse into the packages: the upstream
-Node.js executables and their signatures are left unchanged.
+Node.js executables and their signatures are left unchanged. The signing command
+explicitly passes `--recurse-containers false` because the signing tool defaults
+to signing container contents even when the option is omitted.
 
 The `Packages` workflow artifact contains the unsigned build output. The
 `Signed Packages` artifact contains the verified packages used for publishing.
