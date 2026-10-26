@@ -5,11 +5,22 @@
 	Tests the packages built by Pack.ps1 to ensure dependencies are all satisfied.
 .PARAMETER Version
 	The version of Node.js for which packages were built that should be tested.
+.PARAMETER AttemptNumber
+	The positive integer appended to the NuGet package version when building.
 #>
 Param(
 	[Parameter(Mandatory = $true)]
-	[string]$Version
+	[string]$Version,
+
+	[Parameter()]
+	[ValidateRange(1, [int]::MaxValue)]
+	[int]$AttemptNumber
 )
+
+$PackageVersion = $Version
+if ($PSBoundParameters.ContainsKey('AttemptNumber')) {
+	$PackageVersion = "$Version.$AttemptNumber"
+}
 
 $TestOutputDir = Join-Path $PSScriptRoot obj tests
 $PackageSource = Join-Path $PSScriptRoot bin
@@ -20,7 +31,7 @@ if (Test-Path $TestOutputDir) { Remove-Item -Path $TestOutputDir -Recurse -Force
 New-Item -ItemType Directory -Path $TestOutputDir | Out-Null
 
 'Node.js.redist','Node.js.redist.symbols' |% {
-	& $nugetTool install $_ -OutputDirectory $TestOutputDir -Version $Version -Source $PackageSource
+	& $nugetTool install $_ -OutputDirectory $TestOutputDir -Version $PackageVersion -Source $PackageSource
 }
 
 # Verify that the expected number of packages were brought down.

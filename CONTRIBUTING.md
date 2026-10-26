@@ -20,6 +20,22 @@ Node.js 23 and later include Windows x64 and ARM64, but not x86.
 To publish, run the Build workflow manually with the desired version and enable
 `publish`. Pull requests and pushes build and test packages without publishing.
 
+To republish the same Node.js release with a new NuGet package version, specify
+the optional positive integer `-AttemptNumber`:
+
+```powershell
+.\Build.ps1 -Version 24.22.1 -AttemptNumber 1
+.\Test.ps1 -Version 24.22.1 -AttemptNumber 1
+```
+
+This produces version `24.22.1.1` for every package and its package dependencies,
+while still downloading Node.js `24.22.1`. Use `2` for `24.22.1.2`, and so on.
+Omitting `-AttemptNumber` preserves the original three-part package version.
+The workflow's optional `attemptNumber` input has the same effect; leave it blank
+for the original version. It is a string input so it can be left blank, but must
+contain a positive integer when specified. `Pack.ps1` also accepts `-AttemptNumber`
+when repacking an already restored release.
+
 ## Publishing
 
 Run the [Build workflow](.github/workflows/build.yml) manually with the Node.js

@@ -6,13 +6,24 @@
 	that has previously been restored.
 .PARAMETER Version
 	The version of Node.js to build a package for.
+.PARAMETER AttemptNumber
+	A positive integer appended to the NuGet package version for republishing.
 #>
 Param(
 	[Parameter(Mandatory = $true)]
-	[string]$Version
+	[string]$Version,
+
+	[Parameter()]
+	[ValidateRange(1, [int]::MaxValue)]
+	[int]$AttemptNumber
 )
 
 $ErrorActionPreference = "Stop"
+
+$PackageVersion = $Version
+if ($PSBoundParameters.ContainsKey('AttemptNumber')) {
+	$PackageVersion = "$Version.$AttemptNumber"
+}
 
 $LayoutRoot = "$PSScriptRoot\obj\layout\$Version"
 $LayoutRootSymbols = "$PSScriptRoot\obj\layoutsymbols\$Version"
@@ -26,14 +37,14 @@ $nugetTool = & "$PSScriptRoot\Get-NuGetTool.ps1"
 
 'win','linux','osx' |% {
 	Write-Host "Packing binary packages for $_"
-	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.$_.nuspec  -BasePath $LayoutRoot\$_ -OutputDirectory $targetDir -Version $Version -Properties $Properties
+	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.$_.nuspec  -BasePath $LayoutRoot\$_ -OutputDirectory $targetDir -Version $PackageVersion -Properties $Properties
 }
 
 Write-Host "Packing symbols for Windows"
 $majorVersion = [int]($Version -split '\.')[0]
 $winArchitectures = if ($majorVersion -ge 23) { 'x64','arm64' } else { 'x86','x64','arm64' }
 $winArchitectures |% {
-	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win-$_.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
+	& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.win-$_.nuspec -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $PackageVersion -Properties $Properties
 }
 
 # Generate a temporary symbols.win.nuspec that only lists the architectures available for this version.
@@ -48,8 +59,8 @@ if ($winArchitectures -notcontains 'x86') {
 	$symbolsWinNuspecPath = "$PSScriptRoot\obj\Node.js.redist.symbols.win.nuspec"
 	$symbolsWinNuspec.Save($symbolsWinNuspecPath)
 }
-& $nugetTool pack $symbolsWinNuspecPath -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $Version -Properties $Properties
+& $nugetTool pack $symbolsWinNuspecPath -BasePath $LayoutRootSymbols\win -OutputDirectory $targetDir -Version $PackageVersion -Properties $Properties
 
 Write-Host "Packing top-level packages"
-& $nugetTool pack $PSScriptRoot\src\Node.js.redist.nuspec         -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $Version -Properties $Properties
-& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $Version -Properties $Properties
+& $nugetTool pack $PSScriptRoot\src\Node.js.redist.nuspec         -BasePath $LayoutRoot -OutputDirectory $targetDir -Version $PackageVersion -Properties $Properties
+& $nugetTool pack $PSScriptRoot\src\Node.js.redist.symbols.nuspec -BasePath $LayoutRootSymbols -OutputDirectory $targetDir -Version $PackageVersion -Properties $Properties
